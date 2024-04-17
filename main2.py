@@ -24,10 +24,10 @@ def multi_train(**kwargs):
     #opt.load_model_path = ''
     opt._parse(kwargs)
     
-    
     # step1: configure model
     
     model = getattr(models, opt.model)() 
+        
     if parallel is True: 
         model = torch.nn.DataParallel(model)
     if parallel is True:
@@ -40,6 +40,13 @@ def multi_train(**kwargs):
             model.load_latest(opt.notes)
         elif opt.load_model_path:
             model.load(opt.load_model_path)
+    
+    # Change network model - Fine Tuning
+
+    
+    
+    # To device
+    
     model.to(opt.device)
     print(model)
     
