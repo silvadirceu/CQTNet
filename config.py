@@ -11,6 +11,7 @@ class DefaultConfig(object):
     batch_size = 128  # batch size
     use_gpu = True  # user GPU or not
     num_workers = 4  # how many workers for loading data
+    device = 'cuda:1' #Alterei aqui
 
 
     max_epoch = 100

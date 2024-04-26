@@ -47,20 +47,20 @@ class CQT(Dataset):
         self.indir = 'data/youtube_cqt_npy/'
         self.mode=mode
         if mode == 'train': 
-            filepath='data/SHS100K-TRAIN_6'
+            filepath='pasta/SHS100K-TRAIN'
         elif mode == 'val':
-            filepath='data/SHS100K-VAL'
+            filepath='pasta/SHS100K-VAL'
         elif mode == 'songs350': 
             self.indir = 'data/you350_cqt_npy/'
-            filepath='data/you350_list.txt'
+            filepath='pasta/list'
         elif mode == 'test': 
-            filepath='data/SHS100K-TEST'
+            filepath='pasta/SHS100K-TEST'
         elif mode == 'songs80': 
             self.indir = 'data/covers80_cqt_npy/'
-            filepath = 'data/songs80_list.txt'
+            filepath = 'pasta/list'
         elif mode == 'Mazurkas':
             self.indir = 'data/Mazurkas_cqt_npy/'
-            filepath = 'data/Mazurkas_list.txt'
+            filepath = 'pasta/list'
         with open(filepath, 'r') as fp:
             self.file_list = [line.rstrip() for line in fp]
         self.out_length = out_length
@@ -83,6 +83,7 @@ class CQT(Dataset):
             lambda x : x.permute(1,0).unsqueeze(0),
         ])
         filename = self.file_list[index].strip()
+        print(f"\n\nset_id:{filename}\n\n")
         set_id, version_id = filename.split('.')[0].split('_')
         set_id, version_id = int(set_id), int(version_id)
         in_path = self.indir+filename+'.npy'

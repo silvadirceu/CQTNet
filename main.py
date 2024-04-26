@@ -13,6 +13,8 @@ import torch.nn.functional as F
 import torch
 import torch.nn as nn
 from utility import *
+from models import *
+
 
 # multi_size train
 def multi_train(**kwargs):
@@ -24,8 +26,8 @@ def multi_train(**kwargs):
     #opt.load_model_path = ''
     opt._parse(kwargs)
     # step1: configure model
-    
-    model = getattr(models, opt.model)() 
+
+    model = getattr(models, opt.model)()
     if parallel is True: 
         model = torch.nn.DataParallel(model)
     if parallel is True:
