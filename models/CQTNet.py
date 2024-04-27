@@ -54,25 +54,25 @@ class CQTNet(BasicModule):
         return x, feature
 
 
-class CQTNetSetlist(nn.Module):
+# class CQTNetSetlist(nn.Module):
     
-    def __init__(self, original_model, num_classes):
-        super(CQTNetSetlist, self).__init__()
-        # Everything except the last linear layer
-        self.features = nn.Sequential(*list(original_model.children())[:-1])
-        self.classifier = nn.Sequential(
-            nn.Linear(300, num_classes)
-        )
-        self.modelName = 'cqtnet-setlist'
+#     def __init__(self, original_model, num_classes):
+#         super(CQTNetSetlist, self).__init__()
+#         # Everything except the last linear layer
+#         self.features = nn.Sequential(*list(original_model.children())[:-1])
+#         self.classifier = nn.Sequential(
+#             nn.Linear(300, num_classes)
+#         )
+#         self.modelName = 'cqtnet-setlist'
         
-        # Freeze those weights
-        for p in self.features.parameters():
-            p.requires_grad = False
+#         # Freeze those weights
+#         for p in self.features.parameters():
+#             p.requires_grad = False
 
-    def forward(self, x):
-        f = self.features(x)        
-        f = f.view(f.size(0), -1)
-        y = self.classifier(f)
+#     def forward(self, x):
+#         f = self.features(x)        
+#         f = f.view(f.size(0), -1)
+#         y = self.classifier(f)
         
-        return y
+#         return y
     
