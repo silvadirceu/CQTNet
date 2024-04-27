@@ -77,8 +77,10 @@ class CQT(Dataset):
             self.filepath = os.path.join(self.indir, "universe_test")
             self.file_list = glob.glob(os.path.join(self.filepath, "**/*.h5"), recursive=True)
             
-        print(len(self.file_list))
+        
         self.list_setid = set([a.split("/")[-2] for a in self.file_list])
+        
+        print(f"{self.mode} -- set_ids: {self.get_setids_len()} -- tracks_ids: {self.get_tracks_ids_len()}")
         
         # with open(filepath, 'r') as fp:
         #     self.file_list = [line.rstrip() for line in fp]
@@ -96,6 +98,9 @@ class CQT(Dataset):
     
     def get_filelist(self):
         return self.file_list
+    
+    def get_tracks_ids_len(self):
+        return len(self.file_list)
 
     def __getitem__(self, index):
         
