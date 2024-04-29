@@ -28,6 +28,7 @@ def multi_train(**kwargs):
     model = getattr(models, opt.model)() 
     if parallel is True: 
         model = torch.nn.DataParallel(model)
+        
     if parallel is True:
         if opt.load_latest is True:
             model.module.load_latest(opt.notes)
@@ -38,6 +39,7 @@ def multi_train(**kwargs):
             model.load_latest(opt.notes)
         elif opt.load_model_path:
             model.load(opt.load_model_path)
+            
     model.to(opt.device)
     print(model)
     # step2: data
