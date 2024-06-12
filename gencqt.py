@@ -25,6 +25,7 @@ def CQT(args):
             new_cqt[:,i] = cqt[:,i*mean_size:(i+1)*mean_size].mean(axis=1)
         np.save(out_path, new_cqt)
         #print(new_cens.shape)
+        
     except :
         print('wa', in_path)
 

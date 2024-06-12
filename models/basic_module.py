@@ -4,24 +4,18 @@ import torchvision
 import torch.nn.functional as F
 import time
 import os
+
+
 class BasicModule(torch.nn.Module):
-    """
-    封装了nn.Module,主要是提供了save和load两个方法
-    """
+
     def __init__(self):
         super(BasicModule, self).__init__()
         self.model_name = str(type(self))
 
     def load(self, path):
-        """
-        可加载指定路径的模型
-        """
         self.load_state_dict(torch.load(path))
 
     def save(self, name=None):
-        """
-        保存模型，默认使用“模型名字+时间”作为文件名
-        """
         
         prefix = 'check_points/' + self.model_name +name+ '/'
         if not os.path.isdir(prefix):
@@ -37,4 +31,5 @@ class BasicModule(torch.nn.Module):
     
     def load_latest(self, notes):
         path = 'check_points/' + self.model_name +notes+ '/latest.pth'
+        print(path)
         self.load_state_dict(torch.load(path))

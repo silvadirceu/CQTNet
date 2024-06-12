@@ -13,8 +13,6 @@ import torch.nn.functional as F
 import torch
 import torch.nn as nn
 from utility import *
-from models import *
-
 
 # multi_size train
 def multi_train(**kwargs):
@@ -26,10 +24,11 @@ def multi_train(**kwargs):
     #opt.load_model_path = ''
     opt._parse(kwargs)
     # step1: configure model
-
-    model = getattr(models, opt.model)()
+    
+    model = getattr(models, opt.model)() 
     if parallel is True: 
         model = torch.nn.DataParallel(model)
+        
     if parallel is True:
         if opt.load_latest is True:
             model.module.load_latest(opt.notes)
@@ -40,6 +39,7 @@ def multi_train(**kwargs):
             model.load_latest(opt.notes)
         elif opt.load_model_path:
             model.load(opt.load_model_path)
+            
     model.to(opt.device)
     print(model)
     # step2: data
@@ -47,14 +47,17 @@ def multi_train(**kwargs):
     train_data0 = CQT('train', out_length=200)
     train_data1 = CQT('train', out_length=300)
     train_data2 = CQT('train', out_length=400)
+
     val_data350 = CQT('songs350', out_length=None)
     val_data80 = CQT('songs80', out_length=None)
     val_data = CQT('val', out_length=None)
     test_data = CQT('test', out_length=None)
     val_datatMazurkas = CQT('Mazurkas', out_length=None)
+
     train_dataloader0 = DataLoader(train_data0, opt.batch_size, shuffle=True,num_workers=opt.num_workers)
     train_dataloader1 = DataLoader(train_data1, opt.batch_size, shuffle=True,num_workers=opt.num_workers)
     train_dataloader2 = DataLoader(train_data2, opt.batch_size, shuffle=True,num_workers=opt.num_workers)
+
     val_dataloader = DataLoader(val_data, 1, shuffle=False,num_workers=1)
     test_dataloader = DataLoader(test_data, 1, shuffle=False,num_workers=1)
     val_dataloader80 = DataLoader(val_data80, 1, shuffle=False, num_workers=1)

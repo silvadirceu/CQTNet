@@ -52,3 +52,67 @@ class CQTNet(BasicModule):
         feature = self.fc0(x)
         x = self.fc1(feature)
         return x, feature
+
+
+class CQTNetSetlist(BasicModule):
+    
+    def __init__(self, num_classes=6191):
+        super(CQTNetSetlist, self).__init__()
+        # Everything except the last linear layer
+        self.features = nn.Sequential(OrderedDict([
+            ('conv0', nn.Conv2d(1, 32, kernel_size=(12, 3), dilation=(1, 1), padding=(6, 0), bias=False)),
+            ('norm0', nn.BatchNorm2d(32)), ('relu0', nn.ReLU(inplace=True)),
+            ('conv1', nn.Conv2d(32, 64, kernel_size=(13, 3), dilation=(1, 2), bias=False)),
+            ('norm1', nn.BatchNorm2d(64)), ('relu1', nn.ReLU(inplace=True)),
+            ('pool1', nn.MaxPool2d((1, 2), stride=(1, 2), padding=(0, 1))),
+
+            ('conv2', nn.Conv2d(64, 64, kernel_size=(13, 3), dilation=(1, 1), bias=False)),
+            ('norm2', nn.BatchNorm2d(64)), ('relu2', nn.ReLU(inplace=True)),
+            ('conv3', nn.Conv2d(64, 64, kernel_size=(3, 3), dilation=(1, 2), bias=False)),
+            ('norm3', nn.BatchNorm2d(64)), ('relu3', nn.ReLU(inplace=True)),
+            ('pool3', nn.MaxPool2d((1, 2), stride=(1, 2), padding=(0, 1))),
+
+            ('conv4', nn.Conv2d(64, 128, kernel_size=(3, 3), dilation=(1, 1), bias=False)),
+            ('norm4', nn.BatchNorm2d(128)), ('relu4', nn.ReLU(inplace=True)),
+            ('conv5', nn.Conv2d(128, 128, kernel_size=(3, 3), dilation=(1, 2), bias=False)),
+            ('norm5', nn.BatchNorm2d(128)), ('relu5', nn.ReLU(inplace=True)),
+            ('pool5', nn.MaxPool2d((1, 2), stride=(1, 2), padding=(0, 1))),
+
+            ('conv6', nn.Conv2d(128, 256, kernel_size=(3, 3), dilation=(1, 1), bias=False)),
+            ('norm6', nn.BatchNorm2d(256)), ('relu6', nn.ReLU(inplace=True)),
+            ('conv7', nn.Conv2d(256, 256, kernel_size=(3, 3), dilation=(1, 2), bias=False)),
+            ('norm7', nn.BatchNorm2d(256)), ('relu7', nn.ReLU(inplace=True)),
+            ('pool7', nn.MaxPool2d((1, 2), stride=(1, 2), padding=(0, 1))),
+
+            ('conv8', nn.Conv2d(256, 512, kernel_size=(3, 3), dilation=(1, 1), bias=False)),
+            ('norm8', nn.BatchNorm2d(512)), ('relu8', nn.ReLU(inplace=True)),
+            ('conv9', nn.Conv2d(512, 512, kernel_size=(3, 3), dilation=(1, 2), bias=False)),
+            ('norm9', nn.BatchNorm2d(512)), ('relu9', nn.ReLU(inplace=True)),
+        ]))
+        self.pool = nn.AdaptiveMaxPool2d((1, 1))
+        self.fc0 = nn.Linear(512, 300)
+        self.fc1 = nn.Linear(300, num_classes)
+        
+        self.modelName = 'cqtnet-setlist'
+            
+        # Freeze those weights
+        for p in self.features.parameters():
+            p.requires_grad = False
+        
+        for p in self.fc0.parameters():
+            p.requires_grad = False
+            
+        for p in self.fc1.parameters():
+            p.requires_grad = False
+
+    def forward(self, x, targets=None):
+        N = x.size()[0]
+        x = self.features(x)  # [N, 512, 57, 2~15]
+        x = self.pool(x)
+        x = x.view(N, -1)
+        feature = self.fc0(x)
+        if targets is not None:
+            x = self.fc1(feature)
+        
+        return x, feature
+    
