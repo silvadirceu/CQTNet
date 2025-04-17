@@ -105,14 +105,14 @@ class CQTNetSetlist(BasicModule):
         for p in self.fc1.parameters():
             p.requires_grad = False
 
-    def forward(self, x, targets=None):
+    def forward(self, x): #, targets=None):
         N = x.size()[0]
         x = self.features(x)  # [N, 512, 57, 2~15]
         x = self.pool(x)
         x = x.view(N, -1)
         feature = self.fc0(x)
-        if targets is not None:
-            x = self.fc1(feature)
-        
-        return x, feature
+        # if targets is not None:
+        #     x = self.fc1(feature)
+        #     return x, feature
+        return feature
     
